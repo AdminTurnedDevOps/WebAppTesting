@@ -54,23 +54,25 @@ function New-SmokeTest {
 
     process {
         try {
-            Write-Verbose 'Making API Call'
-            $apiCallParams = @{
-                'uri'             = $URL
-                'UseBasicParsing' = $true
-            }
+            if ($PSCmdlet.ShouldProcess('URL') -and $PSCmdlet.ShouldProcess('returnCode')) {
+                Write-Verbose 'Making API Call'
+                $apiCallParams = @{
+                    'uri'             = $URL
+                    'UseBasicParsing' = $true
+                }
 
-            Write-Verbose 'Confirming Status code...'
-            if ($(Invoke-WebRequest @apiCallParams).StatusCode -notlike $returnCode) {
-                Write-Warning "$returnCode : Not available from GET request"
-            }
+                Write-Verbose 'Confirming Status code...'
+                if ($(Invoke-WebRequest @apiCallParams).StatusCode -notlike $returnCode) {
+                    Write-Warning "$returnCode : Not available from GET request"
+                }
 
-            if ($outFile) {
-                $(Invoke-WebRequest @apiCallParams) | Out-File "$outFile.log"
-            }
+                if ($outFile) {
+                    $(Invoke-WebRequest @apiCallParams) | Out-File "$outFile.log"
+                }
 
-            else {
-                $(Invoke-WebRequest @apiCallParams)
+                else {
+                    $(Invoke-WebRequest @apiCallParams)
+                }
             }
         }
 
